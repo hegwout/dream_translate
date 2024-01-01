@@ -65,6 +65,33 @@ function historyList() {
         })
     })
 }
+function exportToCsv(data, filename) {
+    data = data.map(row => row.map(item => `"${item}"`));
+    const csv = data.map(row => row.join(',')).join('\n');
+    const csvData = new Blob([csv], { type: 'text/csv' });
+    const csvUrl = URL.createObjectURL(csvData);
+    const link = document.createElement('a');
+    link.href = csvUrl;
+    link.download = filename;
+    link.click();
+}
+function exportList() {
+    let tbodyEl = S('#history_box tbody')
+
+    db.find('history', {direction: 'prev'}).then(arr => {
+        if (arr.length < 1) {
+            tbodyEl.innerHTML = `<tr><td class="table_empty" colspan="${thLen}">暂无内容</td></tr>`
+            return
+        }
+        var array = []
+        arr.forEach((v, k) => {
+            array.push([v.content, v.formUrl, getDate(v.createDate, true)])
+        })
+        exportToCsv(array, 'myFile.csv');
+        // console.log(JSON.stringify(arr))
+    })
+}
+
 
 // 批量删除
 function deleteMultiple() {
@@ -80,6 +107,10 @@ function deleteMultiple() {
             rmClass($('extra_but'), 'dmx_show')
             $('selectAll').checked = false
         })
+    })
+    $('export').addEventListener('click', function () {
+        //TODO: export csv
+        exportList();
     })
 }
 
