@@ -42,8 +42,7 @@ function bingDictionary() {
                     let url = ''
                     let aEl = e.querySelector('a')
                     if (!aEl) return url
-                    let str = aEl.getAttribute('onclick')
-                    str && str.replace(/'(http[^']+)'/, r => url = r.replace(/'/g, ''))
+                    url = aEl.getAttribute('data-mp3link')
                     return url
                 }
                 let ukUrl = getSoundUrl(tfEl[1])
